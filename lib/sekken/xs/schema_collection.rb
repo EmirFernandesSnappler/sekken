@@ -41,7 +41,15 @@ class Sekken
 
       # TODO: store by namespace instead?
       def find_by_namespace(namespace)
-        find { |schema| schema.target_namespace == namespace }
+        schemas = select do |schema|
+          schema.target_namespace == namespace
+        end
+
+        return schemas.first if schemas.one?
+
+        schemas.find do |schema|
+          schema.elements.any?
+        end
       end
 
     end
